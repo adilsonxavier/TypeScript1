@@ -109,17 +109,19 @@ greeting("adilson"); // diferente do JS, no TS esta função daria erro se o par
 greeting("adilson","oi");
 
 
-// Interface
+// Interface para tipo
 interface MathFunctions {
     n1: number,
     n2: number
 }
 
 
-function somar(nums: MathFunctions) {
-    return nums.n1 + nums.n2;
+function somar(nums: MathFunctions) { // Veja que aqui o parâmeto tem de ser do tipo Interface MathFunctions
+    return nums.n1 + nums.n2;         // portanto ele tem que ser um objeto {n1:number , n2: number}
+                                      // É diferente do C# que tem que herdar e implementar a Interface
+                                      // No Ts também dá pra usar com classe ( mai abaixo )
 }
-console.log(`resultado soma interface ${somar({ n1: 1, n2: 2 })}`);
+console.log(`resultado soma interface ${somar({ n1: 1, n2: 2})}`);
 
 const algunsNumeros: MathFunctions = { n1: 5, n2: 10 }
 console.log(`resultado soma interface 2 ${somar(algunsNumeros)}`);
@@ -135,3 +137,78 @@ function doSomething(info: number | boolean) {
 }
 
 doSomething(false);
+
+
+function showArrayItems1(arr: any[]) {
+    arr.forEach((item) => console.log(item))
+}
+
+//generics
+function showArrayItemsGeneric<T>(arr: T[]) { // Esta função genérica serve para qualquer tipo de array.
+    arr.forEach((item)=>console.log(item))    // É igual a função não genérica acima mas não precisei usar o any
+}
+
+const a1 = [1, 2, 3];
+const a2 = ["a", "b", "c"];
+const a3 = [true, false];
+
+showArrayItems1(a1)
+showArrayItems1(a2);
+showArrayItemsGeneric(a1);
+showArrayItemsGeneric(a3);
+
+// Classes
+
+class User {
+    name;  // Numa classe TS tenho que declarar as propriedades para usar no construtor como no C# senão dá erro
+    role;  // O JS gerado não aparece estas propriedades
+    isApproved;
+
+    constructor(name:string, role:string, isApproved:boolean) {
+        this.name = name;
+        this.role = role;
+        this.isApproved = isApproved;
+    }
+}
+const tito = new User("tito", "admin", true);
+console.log(tito);
+
+// Interface em classes
+interface IVehicle {  // A interface simplesmente não aparece no arquivo .js
+    brand: string;    // como muitos outras coisas em TS é usada só em tempo de compilação para apontar erros
+    wheels: number;
+    showBrand(): void;
+}
+
+class Car implements IVehicle { // Veja que precisa da palavra chave "implements" diferente da interface de tipo
+                                // usada acima
+    brand: string; // Este ":string" é opcional pois a propriedade var saber o tipo por inferência quando for usado no construtor abaixo
+    wheels;
+    constructor(brand: string, wheels: number) {
+        this.brand = brand;
+        this.wheels = wheels;
+    }
+
+    showBrand() {
+        console.log(`A marca é ${this.brand} e tem ${this.wheels} rodas`)
+    }
+}
+
+const fusca = new Car("VW", 4);
+console.log(fusca);
+fusca.showBrand();
+
+// herança de classe.
+// com exceção do tratamento de tipos, não muda em nada do JS Vanilla
+
+class SuperCar extends Car {
+    engine;
+    constructor(brand: string, wheels: number, engine: number) {
+        super(brand, wheels);
+        this.engine = engine;
+    }
+}
+
+const a4 = new SuperCar("audi", 4, 2);
+console.log(a4);
+a4.showBrand();
