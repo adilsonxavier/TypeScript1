@@ -212,3 +212,25 @@ class SuperCar extends Car {
 const a4 = new SuperCar("audi", 4, 2);
 console.log(a4);
 a4.showBrand();
+
+// decorators
+function BaseParameters() {
+    //Na function generic abaixo estou dizendo que vou pegar todos os argumentos vindos do construtor e estou adicionando novos
+    return function <T extends { new(...args: any[]): {} }>(constructor: T) {  // O decorator retorna uma outra função com as informações que serão alteradas na classe base
+        return class extends constructor {
+            id = Math.random();
+            createdAt = new Date();
+        }
+    }
+}
+
+@BaseParameters()  // O decorator começa com @ e será aplicado na classe Person Abaixo
+class Person {
+    name;
+    constructor(name: string) {
+        this.name = name;
+    }
+}
+
+const sam = new Person("sam");
+console.log(sam); //Object { name: "sam", id: 0.7240895582724572, createdAt: Date Sat Mar 26 2022 22:44:59 GMT-0300 (Horário Padrão de Brasília) }
